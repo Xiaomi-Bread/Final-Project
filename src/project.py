@@ -1,6 +1,11 @@
 import pygame
+import sys
 
 pygame.init()
+pygame.mixer.init()
+
+tank_moving_noise = pygame.mixer.Sound("tank-moving.mp3")
+tank_moving_noise.set_volume(0.1)
 
 #Main Resolution
 screen_width = 1550
@@ -15,6 +20,9 @@ player_hitbox_width = 140
 player_hitbox_height = 80
 
 #Images for the game
+game_begin_button = pygame.image.load("start-button.png").convert_alpha()
+game_begin_button = pygame.transform.scale(game_begin_button, (200, 50))
+
 player_model = pygame.image.load("WW1Tank.png").convert_alpha()
 player_model = pygame.transform.scale(player_model, (player_model_width, player_model_height))
 
@@ -51,6 +59,30 @@ def update_player():
 
 def draw_hitbox():
     pygame.draw.rect(screen, (255, 0, 0), player_rectangle, 2)
+
+def display_start_screen():
+    screen.blit(game_begin_button, (screen_width//2 - game_begin_button.get_width()//2, screen_height//2 -300))
+
+    start_font = pygame.font.SysFont(None, 72)
+    start_text = start_font.render("Click to Start the Offensive", True, WHITE)
+    screen.blit(start_text, (screen_width//2 - start_text.get_width()//2, screen_height//2 - start_text.get_height()//2 ))
+
+    screen.blit(game_begin_button, (screen_width//2 - game_begin_button.get_width()//3 , screen_height//2 + 50))
+    pygame.display.flip()
+
+    waiting = True
+    while waiting: 
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT: 
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN: 
+                mouse_position = pygame.mouse.get_pos()
+                if (screen_width//2 -game_begin_button.get_width()//2 < mouse_position[0] < 
+                    screen_width//2 + game_begin_button.get_width()//2) and (screen_height//2 +50 < mouse_position[1] < screen_height//2 + 50 + game_begin_button.get_height()):
+                    waiting = False
+    
+display_start_screen()
 
 #Game Loop
 running = True
