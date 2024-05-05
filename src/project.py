@@ -81,6 +81,7 @@ def display_start_screen():
                 if (screen_width//2 -game_begin_button.get_width()//2 < mouse_position[0] < 
                     screen_width//2 + game_begin_button.get_width()//2) and (screen_height//2 +50 < mouse_position[1] < screen_height//2 + 50 + game_begin_button.get_height()):
                     waiting = False
+                    pygame.mixer.Sound.play(tank_moving_noise, loops=- 1)
     
 display_start_screen()
 
