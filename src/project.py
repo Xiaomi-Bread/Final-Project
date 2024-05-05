@@ -41,6 +41,9 @@ def update_player():
     if keys[pygame.K_s] or keys[pygame.K_DOWN]:
         y_player += player_speed 
 
+    x_player = max(0, min(x_player, screen_width - player_model_width))
+    y_player = max(0, min(y_player, screen_height - player_model_height))
+
     player_hitbox_x  = x_player + (player_model_width - player_hitbox_width) //2 
     player_hitbox_y = y_player +(player_model_height - player_hitbox_height) //2 + hitbox_vertical_shift
     player_rectangle.x = player_hitbox_x
