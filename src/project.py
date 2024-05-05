@@ -20,14 +20,17 @@ player_hitbox_width = 140
 player_hitbox_height = 80
 
 #Images for the game
+tank_begin_image = pygame.image.load("Tank-begin.png").convert_alpha()
+tank_begin_image = pygame.transform.scale(tank_begin_image, (570, 264))
+
 game_begin_button = pygame.image.load("start-button.png").convert_alpha()
 game_begin_button = pygame.transform.scale(game_begin_button, (200, 50))
 
 player_model = pygame.image.load("WW1Tank.png").convert_alpha()
 player_model = pygame.transform.scale(player_model, (player_model_width, player_model_height))
 
-x_player = screen_width // 3 - player_model_width //2 
-y_player = screen_height - 450
+x_player = screen_width // 3 - player_model_width //3
+y_player = screen_height - 425
 
 hitbox_vertical_shift = 15
 
@@ -35,7 +38,7 @@ player_model_x = x_player
 player_model_y = y_player 
 
 player_hitbox_x = x_player + (player_model_width - player_hitbox_width) // 2 
-player_hitbox_y = y_player + (player_hitbox_height - player_hitbox_height) //2 + hitbox_vertical_shift
+player_hitbox_y = y_player + (player_hitbox_height - player_hitbox_height) //3 + hitbox_vertical_shift
 
 player_rectangle = pygame.Rect(player_hitbox_x, player_hitbox_y, player_hitbox_width, player_hitbox_height)
 
@@ -57,13 +60,17 @@ def update_player():
     player_rectangle.x = player_hitbox_x
     player_rectangle.y = player_hitbox_y
 
+    screen.blit(player_model, (x_player, y_player))
+
+screen.blit(player_model, player_rectangle.topleft)
+
 def draw_hitbox():
     pygame.draw.rect(screen, (255, 0, 0), player_rectangle, 2)
 
 def display_start_screen():
-    screen.blit(game_begin_button, (screen_width//2 - game_begin_button.get_width()//2, screen_height//2 -300))
+    screen.blit(tank_begin_image, (screen_width//2 - tank_begin_image.get_width()//2, screen_height//2 -300))
 
-    start_font = pygame.font.SysFont(None, 72)
+    start_font = pygame.font.SysFont(None, 70)
     start_text = start_font.render("Click to Start the Offensive", True, WHITE)
     screen.blit(start_text, (screen_width//2 - start_text.get_width()//2, screen_height//2 - start_text.get_height()//2 ))
 
