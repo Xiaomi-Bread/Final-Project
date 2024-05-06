@@ -20,6 +20,8 @@ tank_damage_sound.set_volume(0.3)
 bonus_collect_sound = pygame.mixer.Sound("Collect-noise.mp3")
 bonus_collect_sound.set_volume(1.0) #Adjust volume if needed
 
+
+
 #Main Resolution
 screen_width = 1550
 screen_height = 790 
@@ -73,6 +75,22 @@ player_model = pygame.transform.scale(player_model, (player_model_width, player_
 bonus_object_image = pygame.image.load("trenches.png").convert_alpha()
 bonus_object_size = (200, 790)
 bonus_object_image = pygame.transform.scale(bonus_object_image, bonus_object_size)
+
+barbed_wires_image = pygame.image.load("barbed-wires.png").convert_alpha()
+barbed_wires_size = (130, 137)
+barbed_wires_image = pygame.transform.scale(barbed_wires_image, barbed_wires_size)
+
+puddles_image = pygame.image.load("puddle.png").convert_alpha()
+puddles_size = (100, 100)
+puddles_image = pygame.transform.scale(puddles_image, puddles_size)
+
+trees_image = pygame.image.load("dead-trees.png").convert_alpha()
+trees_size = (130, 170)
+trees_image =pygame.transform.scale(trees_image, trees_size)
+
+trunks_image = pygame.image.load("dead-trunks.png").convert_alpha()
+trunks_size = (120, 98)
+trunks_image = pygame.transform.scale(trunks_image, trunks_size)
 
 tank_exit_image = pygame.image.load("Tank-exit.png").convert_alpha()
 tank_exit_image = pygame.transform.scale(tank_exit_image, (465, 392))
@@ -156,6 +174,65 @@ def display_start_screen():
     
 display_start_screen()
 
+class barbedwire:
+    def __init__(self, y, speed):
+        self.rect = pygame.Rect(screen_width + random.randint(200, 600), y, 30, 30) 
+        self.speed = speed
+
+
+
+
+    def update(self):
+        self.rect.x -= self.speed
+
+
+
+
+        if self.rect.right <= 0:
+            self.rect.x = screen_width + random.randint(300, 1000)
+            self.rect.y = random.randint(0, screen_height - 30)
+            self.speed = random.randint(4, 4)
+
+class puddle: 
+    def __init__(self, y, speed):
+        self.rect = pygame.Rect(screen_width + random.randint(200, 600), y, 30, 30) 
+        self.speed = speed
+
+    def update(self):
+        self.rect.x -= self.speed
+
+        if self.rect.right <= 0:
+            self.rect.x = screen_width + random.randint(300, 1000)
+            self.rect.y = random.randint(0, screen_height - 30)
+            self.speed = random.randint(4, 4)
+
+class tree: 
+    def __init__(self, y, speed):
+        self.rect = pygame.Rect(screen_width + random.randint(200, 600), y, 30, 30) 
+        self.speed = speed
+
+    def update(self):
+        self.rect.x -= self.speed
+
+        if self.rect.right <= 0:
+            self.rect.x = screen_width + random.randint(300, 1000)
+            self.rect.y = random.randint(0, screen_height - 30)
+            self.speed = random.randint(4, 4)
+
+class trunk:
+    def __init__(self, y, speed):
+        self.rect = pygame.Rect(screen_width + random.randint(200, 600), y, 30, 30) 
+        self.speed = speed
+
+    def update(self):
+        self.rect.x -= self.speed
+
+        if self.rect.right <= 0:
+            self.rect.x = screen_width + random.randint(300, 1000)
+            self.rect.y = random.randint(0, screen_height - 30)
+            self.speed = random.randint(4, 4)
+
+
 class EnemyShooter: 
     def __init__(self, x, y, speed):
         self.rect = pygame.Rect(x, y, 30, 30)
@@ -237,32 +314,27 @@ class Artillery:
         self.rect = pygame.Rect(x, y, 30, 30)
         self.speed = speed
         self.last_shot_time = 0
-        self.shells = []  # List to hold shells
+        self.shells = []  
 
     def update(self, player_rect):
-        # Move Artillery from right to left
         self.rect.x -= self.speed
 
-        # Check if Artillery needs to respawn
         if self.rect.right <= 0:
             self.rect.x = screen_width + random.randint(500, 1000)
             self.rect.y = random.randint(0, screen_height - 30)
 
-        # Check if Artillery needs to shoot
         current_time = pygame.time.get_ticks()
         if current_time - self.last_shot_time >= random.randint(5000, 7000):
             self.shoot(player_rect)
             self.last_shot_time = current_time
 
     def shoot(self, player_rect):
-        # Calculate the initial position of the shells relative to the shooter's position
         shell_x = self.rect.right
         shell_y = self.rect.centery
 
         shell = Shells(self.rect.x, self.rect.centery, 15)
         self.shells.append(shell)
 
-        # Play enemy shooting sound
         artillery_shooting_sound.play()
 
     def draw(self):
@@ -274,18 +346,25 @@ class Shells:
         self.speed = speed
 
     def update(self):
-        # Move shells from right to left
         self.rect.x -= self.speed
 
 num_spikes = 5
 num_enemy_shooters = 5
 num_artillerys = 1
 num_bonus_objects = 1 
+num_barbed_wires = 15
+num_puddles = 10
+num_trees = 2
+num_trunks = 10
 
 spikes_speed = 2
 enemy_shooter_speeds = [2, 2, 2, 2]
 artillery_speeds = [2]
 bonus_object_speed =4
+barbed_wires_speed = 4
+puddles_speed = 4
+trees_speed = 4
+trunks_speed = 4
 
 spikes = [Spikes (random.randint(0, screen_height -30), spikes_speed) for _ in range(num_spikes)]
 
@@ -297,6 +376,15 @@ artillerys = [Artillery(screen_width + random.randint(100,200), random.randint(0
 
 bonus_objects = [BonusObject(screen_width + random.randint(100, 200), bonus_object_speed) 
                  for _ in range(num_bonus_objects)]
+
+barbed_wires = [barbedwire(random.randint(0, screen_height - 30), barbed_wires_speed) for _ in range(num_barbed_wires)]
+
+puddles = [puddle(random.randint(0, screen_height - 30), puddles_speed) for _ in range(num_puddles)]
+
+trees = [tree(random.randint(0, screen_height - 30), trees_speed) for _ in range(num_trees)]
+
+trunks = [trunk(random.randint(0, screen_height - 30), trunks_speed) for _ in range(num_trunks)]
+
 
 font = pygame.font.SysFont(None, 36)
 
@@ -377,10 +465,9 @@ while running:
         artillery.update(player_rectangle)
         for shell in artillery.shells:
             shell.update()
-            if player_rectangle.colliderect(shell.rect) and shell not in hit_projectiles: #Check if the shells has no already hit the player
-                player_health -= 2
-                hit_projectiles.add(shell) # Add the shell to the set to track hits
-                tank_damage_sound.play() # Play tank damage sound
+            if player_rectangle.colliderect(shell.rect) and shell not in hit_projectiles: 
+                hit_projectiles.add(shell) 
+                tank_damage_sound.play() 
                 if player_health <= 0:
                     game_over = True
                     
@@ -388,7 +475,6 @@ while running:
 
     for bonus_object in bonus_objects: 
         if player_rectangle.colliderect(bonus_object.rect) and bonus_object.hit_count == 0:
-            # Player gets a point
             bonus_object.hit_count += 1
             bonus_collect_sound.play()
             score += 1  
@@ -398,6 +484,22 @@ while running:
     for bonus_object in bonus_objects:
         bonus_object.update()
         screen.blit(bonus_object_image, bonus_object.rect)
+
+    for puddle_ in puddles: 
+        puddle_.update()
+        screen.blit(puddles_image, puddle_.rect)
+    
+    for barbed_wire in barbed_wires: 
+        barbed_wire.update()
+        screen.blit(barbed_wires_image, barbed_wire.rect)
+    
+    for tree_ in trees:
+        tree_.update()
+        screen.blit(trees_image, tree_.rect)
+
+    for trunk_ in trunks: 
+        trunk_.update()
+        screen.blit(trunks_image, trunk_.rect)
 
     score_text = score_front.render("Trenches: " + str(score), True, BLACK)
     screen.blit(score_text, (550, 20))
