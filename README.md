@@ -52,7 +52,7 @@ Lastly there is the enviroment. Whenever you enter the game you will be introduc
 
 In addition to maps. You will also see many enviromental part of the maps. I have many features that are also common  in trench warfare. For example the barbedwired to prevent the enemies from getting too far, ouddles many from the constant fire of artilerys at each other, trees that are dead from all of the fighting that is going around and some have even fallen due to it 
 
-![enviroment](barbed_wires.png)
+![enviroment](barbed-wires.png)
 ![enviroment](puddle.png)
 ![enviroment](dead-trees.png)
 ![enviroment](dead-trunks.png)
