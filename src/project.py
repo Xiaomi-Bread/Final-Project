@@ -1,5 +1,6 @@
 import pygame
 import sys
+import random
 
 pygame.init()
 pygame.mixer.init()
@@ -13,6 +14,7 @@ screen_height = 790
 screen = pygame.display.set_mode((screen_width, screen_height))
 
 WHITE = (255, 255, 255)
+RED = (255, 0, 0)
 
 player_model_width = 230 
 player_model_height = 170 
@@ -113,6 +115,48 @@ def display_start_screen():
     
 display_start_screen()
 
+class EnemyShooter: 
+    def __init__(self, x, y, speed):
+        self.rect = pygame.Rect(x, y, 30, 30)
+        self.speed = speed
+        self.last_shot_time = 0 
+        self.bullets = []
+
+    def update(self, player_rectangle):
+        self.rect.x -= self.speed 
+        if self.rect.right <= 0: 
+            self.rect.x = screen_width + random.randint(100, 100)
+            self.rect.y = random.randint(0, screen_height -30) 
+
+        current_time = pygame.time.get_ticks()
+        if current_time - self.last_shot_time >= random.randint(2000, 4000): 
+            self.fire(player_rectangle)
+            self.last_shot_time = current_time
+
+    def fire(self, player_rect): 
+        bullet_x = self.rect.right
+        bullet_y = self.rect.centery 
+
+        bullet = Bullet(self.rect.x, self. rect.centery, 8)
+        self.bullets.append(bullet)
+
+    def draw(self):
+        screen.blit(enemy_shooter_image, self.rect.topleft)
+
+class Bullet: 
+    def __init__(self, x, y, speed):
+        self.rect = pygame.Rect(x, y, 10, 5)
+        self.speed = speed 
+
+    def update(self): 
+        self.rect.x -= self.speed
+ 
+num_enemy_shooters = 4
+
+enemy_shooter_speeds = [3, 3, 3, 3]
+
+enemy_shooters = [EnemyShooter(screen_width + random.randint(100,200), random.randint(0, screen_height -30), 
+                               random.choice(enemy_shooter_speeds)) for _ in range(num_enemy_shooters)]
 #Game Loop
 running = True
 while running: 
@@ -124,6 +168,13 @@ while running:
 
     screen.fill(WHITE)
 
+    for enemeyshooter in enemy_shooters: 
+        enemeyshooter.update(player_rectangle)
+        enemeyshooter.draw()
+        for bullet in enemeyshooter.bullets: 
+            bullet.update()
+            pygame.draw.rect(screen, RED, bullet.rect)
+    
     screen.blit(player_model, (x_player, y_player))
 
     draw_hitbox()
