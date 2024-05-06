@@ -89,7 +89,7 @@ trees_size = (130, 170)
 trees_image =pygame.transform.scale(trees_image, trees_size)
 
 trunks_image = pygame.image.load("dead-trunks.png").convert_alpha()
-trunks_size = (120, 98)
+trunks_size = (50, 58)
 trunks_image = pygame.transform.scale(trunks_image, trunks_size)
 
 tank_exit_image = pygame.image.load("Tank-exit.png").convert_alpha()
@@ -355,7 +355,7 @@ num_bonus_objects = 1
 num_barbed_wires = 15
 num_puddles = 10
 num_trees = 2
-num_trunks = 10
+num_trunks = 2
 
 spikes_speed = 2
 enemy_shooter_speeds = [2, 2, 2, 2]
@@ -466,6 +466,7 @@ while running:
         for shell in artillery.shells:
             shell.update()
             if player_rectangle.colliderect(shell.rect) and shell not in hit_projectiles: 
+                player_health -= 2 
                 hit_projectiles.add(shell) 
                 tank_damage_sound.play() 
                 if player_health <= 0:
@@ -485,6 +486,10 @@ while running:
         bonus_object.update()
         screen.blit(bonus_object_image, bonus_object.rect)
 
+    for trunk_ in trunks: 
+        trunk_.update()
+        screen.blit(trunks_image, trunk_.rect)
+
     for puddle_ in puddles: 
         puddle_.update()
         screen.blit(puddles_image, puddle_.rect)
@@ -497,9 +502,7 @@ while running:
         tree_.update()
         screen.blit(trees_image, tree_.rect)
 
-    for trunk_ in trunks: 
-        trunk_.update()
-        screen.blit(trunks_image, trunk_.rect)
+    
 
     score_text = score_front.render("Trenches: " + str(score), True, BLACK)
     screen.blit(score_text, (550, 20))
