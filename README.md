@@ -38,3 +38,21 @@ As mentioned before your crew are the ones keeping your tank operational. If you
 ![crew](heart-damaged.png)
 
 ![tankdestoryed](Tank-Exit.png)
+
+As lastly, there are trenches where all of the enemies are stationed (something the artillery). The enemies job is to prevent you from advantaging into to many trenches. So whenever you pass throught a trench you will get one point or how many trenches you have pass. Additionally they will be display as your career stats at the very end of your tank lifes. 
+
+![trench](trenches.png)
+
+Lastly there is the enviroment. Whenever you enter the game you will be introducted to a different land. As shown we have the Nomansland, grassland, snowland, and desert. As those are the places where WW1's trench warfare as occured. 
+
+![Map](Nomansland.png)
+![Map](Grassland.png)
+![Map](Snowland.png)
+![Map](Desertland.png)
+
+In addition to maps. You will also see many enviromental part of the maps. I have many features that are also common  in trench warfare. For example the barbedwired to prevent the enemies from getting too far, ouddles many from the constant fire of artilerys at each other, trees that are dead from all of the fighting that is going around and some have even fallen due to it 
+
+![enviroment](barbed_wires.png)
+![enviroment](puddle.png)
+![enviroment](dead-trees.png)
+![enviroment](dead-trunks.png)
