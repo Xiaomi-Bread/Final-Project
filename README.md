@@ -17,5 +17,5 @@ The tank looks very strange. However you don't mind and became to command your c
 ## Features
 As you press "Start" you be brought into the screen where you will see your crew members. They are your health points. They are the ones keeping the tank going and operational. 
 
-![Crew](health.png)
+![Crew](heart.png)
 
