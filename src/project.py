@@ -14,14 +14,30 @@ enemy_shooting_sound.set_volume(0.09)
 tank_damage_sound = pygame.mixer.Sound("tank-damage.mp3")
 tank_damage_sound.set_volume(0.3) 
 
+bonus_collect_sound = pygame.mixer.Sound("Collect-noise.mp3")
+bonus_collect_sound.set_volume(1.0) #Adjust volume if needed
+
 #Main Resolution
 screen_width = 1550
 screen_height = 790 
 screen = pygame.display.set_mode((screen_width, screen_height))
 
+background_images = {
+    "Nomansland": pygame.image.load("Nomansland.png").convert(),
+    "Snowland": pygame.image.load("Snowland.png").convert(),
+    "Grassland": pygame.image.load("Grassland.png").convert(),
+    "Desert": pygame.image.load("Desertland.png").convert()
+}
+def choose_background_image():
+    return random.choice(list(background_images.values()))
+
+background_image = choose_background_image()
+
+
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 COOPERGOLD = (174, 137, 61)
+BLACK = (0, 0, 0)
 
 player_model_width = 230 
 player_model_height = 170 
@@ -47,6 +63,10 @@ enemy_shooter_image = pygame.transform.scale(enemy_shooter_image, (120, 55))
 
 player_model = pygame.image.load("WW1Tank.png").convert_alpha()
 player_model = pygame.transform.scale(player_model, (player_model_width, player_model_height))
+
+bonus_object_image = pygame.image.load("trenches.png").convert_alpha()
+bonus_object_size = (200, 790)
+bonus_object_image = pygame.transform.scale(bonus_object_image, bonus_object_size)
 
 tank_exit_image = pygame.image.load("Tank-exit.png").convert_alpha()
 tank_exit_image = pygame.transform.scale(tank_exit_image, (465, 392))
@@ -166,13 +186,45 @@ class Bullet:
 
     def update(self): 
         self.rect.x -= self.speed
- 
+
+class BonusObject: 
+    def __init__(self, x, speed):
+        self.rect = pygame.Rect(x,  0, 100, screen_height)
+        self.speed = speed
+        self.active = True
+        self.hit_count = 0 
+
+    def update(self): 
+        self.rect.x -= self.speed
+    
+        if self.rect.right <= 0: 
+            self.rect.x = screen_width + random.randint(23, 23)
+            self.speed = random.randint(4, 4)
+            self.hit_count = 0
+
+    def draw(self):
+        screen.blit(bonus_object_image, self.rect) 
+
+
 num_enemy_shooters = 5
+num_bonus_objects = 1 
 
 enemy_shooter_speeds = [2, 2, 2, 2]
+bonus_object_speed =4
 
 enemy_shooters = [EnemyShooter(screen_width + random.randint(100,200), random.randint(0, screen_height -30), 
                                random.choice(enemy_shooter_speeds)) for _ in range(num_enemy_shooters)]
+
+bonus_objects = [BonusObject(screen_width + random.randint(100, 200), bonus_object_speed) 
+                 for _ in range(num_bonus_objects)]
+
+font = pygame.font.SysFont(None, 36)
+
+score = 0 
+last_bonus_time = 0
+bonus_time_limit = 1000
+
+score_front = pygame.font.SysFont(None, 50)
 
 game_over = False 
 
@@ -192,6 +244,10 @@ while running:
         game_over_text = game_over_font.render("All Crew Knocked Out", True, RED)
         screen.blit(game_over_text, (screen_width//2 - game_over_text.get_width()//2, screen_height//2 
                                      - game_over_text.get_height()//2))
+        
+        final_score_font = pygame.font.SysFont(None, 36)
+        final_score_text = final_score_font.render("Career Stats: " + str(score), True, WHITE)
+        screen.blit(final_score_text, (screen_width//2 - final_score_text.get_width()//2, screen_height//2 + 120))
         
         final_quote_font = pygame.font.SysFont(None, 30)
         final_quote_text = final_quote_font.render("we did what we did best. Our Job.", True, COOPERGOLD)
@@ -226,7 +282,22 @@ while running:
                     game_over = True
                     break
 
-    screen.fill(WHITE)
+    for bonus_object in bonus_objects: 
+        if player_rectangle.colliderect(bonus_object.rect) and bonus_object.hit_count == 0:
+            # Player gets a point
+            bonus_object.hit_count += 1
+            bonus_collect_sound.play()
+            score += 1  
+
+    screen.blit(background_image, (0, 0))
+
+    for bonus_object in bonus_objects:
+        bonus_object.update()
+        screen.blit(bonus_object_image, bonus_object.rect)
+
+    score_text = score_front.render("Trenches: " + str(score), True, BLACK)
+    screen.blit(score_text, (550, 20))
+    
 
     for enemyshooter in enemy_shooters: 
         enemyshooter.update(player_rectangle)
@@ -246,3 +317,4 @@ while running:
     pygame.time.Clock().tick(60)
 
 pygame.quit()
+sys.exit()
