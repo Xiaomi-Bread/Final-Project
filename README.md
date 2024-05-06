@@ -56,3 +56,20 @@ In addition to maps. You will also see many enviromental part of the maps. I hav
 ![enviroment](puddle.png)
 ![enviroment](dead-trees.png)
 ![enviroment](dead-trunks.png)
+
+Those are all shown around the map as you enter farther into the enemy line. So have fun going playing and seeing the scenery as all of the art is done and I hope you do join the final project game as much fun as I was creating it!
+
+## How to play
+I don't know exactly how make it available for it to be you to download. However will the git rep link I have provided. Here is how you are able to play. 
+1. Clone the URL Provided 
+2. Go to the Terminal 
+3. Type: cd src 
+4. Then type:  py project.py(or Click on the Terminal Code)
+5. Enjoy!
+
+## Contributions
+This Project was soley done by me. 
+
+##Credits
+Artist: Alan
+Programer: Alan 
