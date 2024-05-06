@@ -81,6 +81,7 @@ def draw_hitbox():
 
 player_max_health = 4 
 player_health = player_max_health
+hit_projectiles = set()
 
 def draw_health(): 
     heart_offset = 20 
@@ -153,10 +154,11 @@ class Bullet:
  
 num_enemy_shooters = 4
 
-enemy_shooter_speeds = [3, 3, 3, 3]
+enemy_shooter_speeds = [2, 2, 2, 2]
 
 enemy_shooters = [EnemyShooter(screen_width + random.randint(100,200), random.randint(0, screen_height -30), 
                                random.choice(enemy_shooter_speeds)) for _ in range(num_enemy_shooters)]
+
 #Game Loop
 running = True
 while running: 
@@ -166,12 +168,20 @@ while running:
 
     update_player()
 
+    for enemyshooter in enemy_shooters: 
+        enemyshooter.update(player_rectangle)
+        for bullet in enemyshooter.bullets: 
+            bullet.update()
+            if player_rectangle.colliderect(bullet.rect) and bullet not in hit_projectiles: 
+                player_health -= 1 
+                hit_projectiles.add(bullet)
+
     screen.fill(WHITE)
 
-    for enemeyshooter in enemy_shooters: 
-        enemeyshooter.update(player_rectangle)
-        enemeyshooter.draw()
-        for bullet in enemeyshooter.bullets: 
+    for enemyshooter in enemy_shooters: 
+        enemyshooter.update(player_rectangle)
+        enemyshooter.draw()
+        for bullet in enemyshooter.bullets: 
             bullet.update()
             pygame.draw.rect(screen, RED, bullet.rect)
     
