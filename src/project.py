@@ -11,6 +11,9 @@ tank_moving_noise.set_volume(0.1)
 enemy_shooting_sound = pygame.mixer.Sound("enemy-fire.mp3")
 enemy_shooting_sound.set_volume(0.09)
 
+artillery_shooting_sound = pygame.mixer.Sound("artillery-fire.mp3")
+artillery_shooting_sound.set_volume(0.2)
+
 tank_damage_sound = pygame.mixer.Sound("tank-damage.mp3")
 tank_damage_sound.set_volume(0.3) 
 
@@ -60,6 +63,9 @@ heart_damaged_image = pygame.transform.scale(heart_damaged_image, heart_size)
 
 enemy_shooter_image = pygame.image.load("WW1Shooter.png").convert_alpha()
 enemy_shooter_image = pygame.transform.scale(enemy_shooter_image, (120, 55))
+
+artillery_image = pygame.image.load("artillery.png").convert_alpha()
+artillery_image = pygame.transform.scale(artillery_image, (250,108))
 
 player_model = pygame.image.load("WW1Tank.png").convert_alpha()
 player_model = pygame.transform.scale(player_model, (player_model_width, player_model_height))
@@ -226,19 +232,68 @@ class Spikes:
     def draw(self): 
         screen.blit(self.image, self.rect)
 
+class Artillery:
+    def __init__(self, x, y, speed):
+        self.rect = pygame.Rect(x, y, 30, 30)
+        self.speed = speed
+        self.last_shot_time = 0
+        self.shells = []  # List to hold shells
+
+    def update(self, player_rect):
+        # Move Artillery from right to left
+        self.rect.x -= self.speed
+
+        # Check if Artillery needs to respawn
+        if self.rect.right <= 0:
+            self.rect.x = screen_width + random.randint(500, 1000)
+            self.rect.y = random.randint(0, screen_height - 30)
+
+        # Check if Artillery needs to shoot
+        current_time = pygame.time.get_ticks()
+        if current_time - self.last_shot_time >= random.randint(5000, 7000):
+            self.shoot(player_rect)
+            self.last_shot_time = current_time
+
+    def shoot(self, player_rect):
+        # Calculate the initial position of the shells relative to the shooter's position
+        shell_x = self.rect.right
+        shell_y = self.rect.centery
+
+        shell = Shells(self.rect.x, self.rect.centery, 15)
+        self.shells.append(shell)
+
+        # Play enemy shooting sound
+        artillery_shooting_sound.play()
+
+    def draw(self):
+        screen.blit(artillery_image, self.rect.topleft)
+
+class Shells:
+    def __init__(self, x, y, speed):
+        self.rect = pygame.Rect(x, y, 30, 10)
+        self.speed = speed
+
+    def update(self):
+        # Move shells from right to left
+        self.rect.x -= self.speed
 
 num_spikes = 5
 num_enemy_shooters = 5
+num_artillerys = 1
 num_bonus_objects = 1 
 
 spikes_speed = 2
 enemy_shooter_speeds = [2, 2, 2, 2]
+artillery_speeds = [2]
 bonus_object_speed =4
 
 spikes = [Spikes (random.randint(0, screen_height -30), spikes_speed) for _ in range(num_spikes)]
 
 enemy_shooters = [EnemyShooter(screen_width + random.randint(100,200), random.randint(0, screen_height -30), 
                                random.choice(enemy_shooter_speeds)) for _ in range(num_enemy_shooters)]
+
+artillerys = [Artillery(screen_width + random.randint(100,200), random.randint(0, screen_height -30),
+                         random.choice(artillery_speeds)) for _ in range(num_artillerys)]
 
 bonus_objects = [BonusObject(screen_width + random.randint(100, 200), bonus_object_speed) 
                  for _ in range(num_bonus_objects)]
@@ -317,6 +372,19 @@ while running:
                 if player_health <= 0: 
                     game_over = True
                     break
+    
+    for artillery in artillerys:
+        artillery.update(player_rectangle)
+        for shell in artillery.shells:
+            shell.update()
+            if player_rectangle.colliderect(shell.rect) and shell not in hit_projectiles: #Check if the shells has no already hit the player
+                player_health -= 2
+                hit_projectiles.add(shell) # Add the shell to the set to track hits
+                tank_damage_sound.play() # Play tank damage sound
+                if player_health <= 0:
+                    game_over = True
+                    
+                    break
 
     for bonus_object in bonus_objects: 
         if player_rectangle.colliderect(bonus_object.rect) and bonus_object.hit_count == 0:
@@ -344,6 +412,14 @@ while running:
         for bullet in enemyshooter.bullets: 
             bullet.update()
             pygame.draw.rect(screen, RED, bullet.rect)
+    
+    for artillery in artillerys:
+        artillery.update(player_rectangle)
+        artillery.draw()
+        for shell in artillery.shells:
+            shell.update()
+            pygame.draw.rect(screen, COOPERGOLD, shell.rect)
+  
     
     screen.blit(player_model, (x_player, y_player))
 
