@@ -11,6 +11,7 @@ tank_moving_noise.set_volume(0.1)
 screen_width = 1550
 screen_height = 790 
 screen = pygame.display.set_mode((screen_width, screen_height))
+
 WHITE = (255, 255, 255)
 
 player_model_width = 230 
@@ -25,6 +26,15 @@ tank_begin_image = pygame.transform.scale(tank_begin_image, (570, 264))
 
 game_begin_button = pygame.image.load("start-button.png").convert_alpha()
 game_begin_button = pygame.transform.scale(game_begin_button, (200, 50))
+
+heart_image = pygame.image.load("heart.png").convert_alpha()
+heart_size = (150, 150)
+heart_image = pygame.transform.scale(heart_image, heart_size)
+heart_damaged_image = pygame.image.load("heart-damaged.png").convert_alpha()
+heart_damaged_image = pygame.transform.scale(heart_damaged_image, heart_size)
+
+enemy_shooter_image = pygame.image.load("WW1Shooter.png").convert_alpha()
+enemy_shooter_image = pygame.transform.scale(enemy_shooter_image, (120, 55))
 
 player_model = pygame.image.load("WW1Tank.png").convert_alpha()
 player_model = pygame.transform.scale(player_model, (player_model_width, player_model_height))
@@ -67,6 +77,17 @@ screen.blit(player_model, player_rectangle.topleft)
 def draw_hitbox():
     pygame.draw.rect(screen, (255, 0, 0), player_rectangle, 2)
 
+player_max_health = 4 
+player_health = player_max_health
+
+def draw_health(): 
+    heart_offset = 20 
+    for i in range(player_max_health):
+        if i < player_health: 
+            screen.blit(heart_image, (heart_offset + i * 87, 20))
+        else: 
+            screen.blit(heart_damaged_image, (heart_offset + i * 87, 20))
+
 def display_start_screen():
     screen.blit(tank_begin_image, (screen_width//2 - tank_begin_image.get_width()//2, screen_height//2 -300))
 
@@ -106,6 +127,8 @@ while running:
     screen.blit(player_model, (x_player, y_player))
 
     draw_hitbox()
+
+    draw_health()
 
     pygame.display.flip()
 
