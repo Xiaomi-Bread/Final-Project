@@ -21,6 +21,7 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
+COOPERGOLD = (174, 137, 61)
 
 player_model_width = 230 
 player_model_height = 170 
@@ -46,6 +47,9 @@ enemy_shooter_image = pygame.transform.scale(enemy_shooter_image, (120, 55))
 
 player_model = pygame.image.load("WW1Tank.png").convert_alpha()
 player_model = pygame.transform.scale(player_model, (player_model_width, player_model_height))
+
+tank_exit_image = pygame.image.load("Tank-exit.png").convert_alpha()
+tank_exit_image = pygame.transform.scale(tank_exit_image, (465, 392))
 
 x_player = screen_width // 3 - player_model_width //3
 y_player = screen_height - 425
@@ -163,7 +167,7 @@ class Bullet:
     def update(self): 
         self.rect.x -= self.speed
  
-num_enemy_shooters = 4
+num_enemy_shooters = 5
 
 enemy_shooter_speeds = [2, 2, 2, 2]
 
@@ -179,7 +183,20 @@ while running:
         if event.type == pygame.QUIT:
             running = False 
     if game_over: 
+
         screen.fill((0, 0, 0))
+
+        screen.blit(tank_exit_image, (screen_width//2 - tank_exit_image.get_width()//2, screen_height//2 - 300))
+
+        game_over_font = pygame.font.SysFont(None, 72)
+        game_over_text = game_over_font.render("All Crew Knocked Out", True, RED)
+        screen.blit(game_over_text, (screen_width//2 - game_over_text.get_width()//2, screen_height//2 
+                                     - game_over_text.get_height()//2))
+        
+        final_quote_font = pygame.font.SysFont(None, 30)
+        final_quote_text = final_quote_font.render("we did what we did best. Our Job.", True, COOPERGOLD)
+        screen.blit(final_quote_text, (screen_width//2 - final_quote_text.get_width()//2, screen_height//2 + 180))
+
         exit_button_rect = pygame.Rect(screen_width//2 - 100, screen_height//2 +50, 200, 50)
         pygame.draw.rect(screen, RED, exit_button_rect)
         exit_button_font  = pygame.font.SysFont(None, 36)
