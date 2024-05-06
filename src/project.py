@@ -497,12 +497,17 @@ while running:
     for barbed_wire in barbed_wires: 
         barbed_wire.update()
         screen.blit(barbed_wires_image, barbed_wire.rect)
-    
+
+    for artillery in artillerys:
+        artillery.update(player_rectangle)
+        artillery.draw()
+        for shell in artillery.shells:
+            shell.update()
+            pygame.draw.rect(screen, COOPERGOLD, shell.rect)
+            
     for tree_ in trees:
         tree_.update()
         screen.blit(trees_image, tree_.rect)
-
-    
 
     score_text = score_front.render("Trenches: " + str(score), True, BLACK)
     screen.blit(score_text, (550, 20))
@@ -518,17 +523,12 @@ while running:
             bullet.update()
             pygame.draw.rect(screen, RED, bullet.rect)
     
-    for artillery in artillerys:
-        artillery.update(player_rectangle)
-        artillery.draw()
-        for shell in artillery.shells:
-            shell.update()
-            pygame.draw.rect(screen, COOPERGOLD, shell.rect)
+    
   
     
     screen.blit(player_model, (x_player, y_player))
 
-    draw_hitbox()
+    # draw_hitbox()
 
     draw_health()
 
