@@ -115,6 +115,7 @@ def draw_hitbox():
 player_max_health = 4 
 player_health = player_max_health
 hit_projectiles = set()
+hit_spike_objects = set()
 
 def draw_health(): 
     heart_offset = 20 
@@ -205,12 +206,36 @@ class BonusObject:
     def draw(self):
         screen.blit(bonus_object_image, self.rect) 
 
+class Spikes: 
+    def __init__(self, y, speed):
+        self.image = pygame.image.load("spike.png").convert_alpha()
+        self.rect = self.image.get_rect()
+        self.rect.x = screen_width + random.randint(100, 100)
+        self.rect.y = y
+        self.speed = speed
+    
+    def update(self):
+        self.rect.x -= self.speed
 
+        if self.rect.right <= 0: 
+            self.rect.x = screen_width + random.randint(50, 120)
+            self.rect.y = random.randint(0, screen_height - self.rect.height)
+        
+        self.speed = random.randint(2, 2)
+
+    def draw(self): 
+        screen.blit(self.image, self.rect)
+
+
+num_spikes = 5
 num_enemy_shooters = 5
 num_bonus_objects = 1 
 
+spikes_speed = 2
 enemy_shooter_speeds = [2, 2, 2, 2]
 bonus_object_speed =4
+
+spikes = [Spikes (random.randint(0, screen_height -30), spikes_speed) for _ in range(num_spikes)]
 
 enemy_shooters = [EnemyShooter(screen_width + random.randint(100,200), random.randint(0, screen_height -30), 
                                random.choice(enemy_shooter_speeds)) for _ in range(num_enemy_shooters)]
@@ -270,6 +295,17 @@ while running:
 
     update_player()
 
+    for spike in spikes: 
+        spike.update()
+        if player_rectangle.colliderect(spike.rect):
+            if spike not in hit_spike_objects: 
+                player_health -= 1 
+                hit_spike_objects.add(spike)
+            tank_damage_sound.play()
+            if player_health <= 0: 
+                game_over = True
+                break
+
     for enemyshooter in enemy_shooters: 
         enemyshooter.update(player_rectangle)
         for bullet in enemyshooter.bullets: 
@@ -297,7 +333,10 @@ while running:
 
     score_text = score_front.render("Trenches: " + str(score), True, BLACK)
     screen.blit(score_text, (550, 20))
-    
+
+    for spike in spikes:
+        spike.update()
+        spike.draw()
 
     for enemyshooter in enemy_shooters: 
         enemyshooter.update(player_rectangle)
