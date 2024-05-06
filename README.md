@@ -70,6 +70,6 @@ I don't know exactly how make it available for it to be you to download. However
 ## Contributions
 This Project was soley done by me. 
 
-##Credits
+## Credits
 Artist: Alan
 Programer: Alan 
