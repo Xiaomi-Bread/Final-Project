@@ -178,6 +178,22 @@ while running:
     for event  in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False 
+    if game_over: 
+        screen.fill((0, 0, 0))
+        exit_button_rect = pygame.Rect(screen_width//2 - 100, screen_height//2 +50, 200, 50)
+        pygame.draw.rect(screen, RED, exit_button_rect)
+        exit_button_font  = pygame.font.SysFont(None, 36)
+        exit_button_text = exit_button_font.render("Discharge", True, WHITE)
+        screen.blit(exit_button_text, (screen_width//2 - exit_button_text.get_width()/2, screen_height//2 +65))
+
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN: 
+                mouse_pos = pygame.mouse.get_pos()
+                if exit_button_rect.collidepoint(mouse_pos): 
+                    running =  False 
+                    break
+        pygame.display.flip()
+        continue
 
     update_player()
 
