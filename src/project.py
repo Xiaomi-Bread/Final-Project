@@ -8,6 +8,12 @@ pygame.mixer.init()
 tank_moving_noise = pygame.mixer.Sound("tank-moving.mp3")
 tank_moving_noise.set_volume(0.1)
 
+enemy_shooting_sound = pygame.mixer.Sound("enemy-fire.mp3")
+enemy_shooting_sound.set_volume(0.09)
+
+tank_damage_sound = pygame.mixer.Sound("tank-damage.mp3")
+tank_damage_sound.set_volume(0.3) 
+
 #Main Resolution
 screen_width = 1550
 screen_height = 790 
@@ -55,6 +61,9 @@ player_hitbox_y = y_player + (player_hitbox_height - player_hitbox_height) //3 +
 player_rectangle = pygame.Rect(player_hitbox_x, player_hitbox_y, player_hitbox_width, player_hitbox_height)
 
 player_speed = 3
+
+def play_tank_damage_sound(): 
+    tank_damage_sound.play()
 
 def update_player(): 
     global x_player, y_player, player_rectangle 
@@ -141,6 +150,8 @@ class EnemyShooter:
         bullet = Bullet(self.rect.x, self. rect.centery, 8)
         self.bullets.append(bullet)
 
+        enemy_shooting_sound.play()
+
     def draw(self):
         screen.blit(enemy_shooter_image, self.rect.topleft)
 
@@ -159,6 +170,8 @@ enemy_shooter_speeds = [2, 2, 2, 2]
 enemy_shooters = [EnemyShooter(screen_width + random.randint(100,200), random.randint(0, screen_height -30), 
                                random.choice(enemy_shooter_speeds)) for _ in range(num_enemy_shooters)]
 
+game_over = False 
+
 #Game Loop
 running = True
 while running: 
@@ -175,6 +188,10 @@ while running:
             if player_rectangle.colliderect(bullet.rect) and bullet not in hit_projectiles: 
                 player_health -= 1 
                 hit_projectiles.add(bullet)
+                tank_damage_sound.play()
+                if player_health <= 0: 
+                    game_over = True
+                    break
 
     screen.fill(WHITE)
 
